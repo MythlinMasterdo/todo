@@ -128,6 +128,52 @@ $ todo list
 [ ] 001: Learn Golang
 ```
 
+### Sub-TODOs
+
+`-p` or `--parent` flag enables to add a sub-TODO of a specified TODO.
+
+```
+$ todo add -p 1 Learn slices
+$ todo add -p 1 Learn standard libraries
+$ todo list
+[ ] 001: Learn Golang
+	[ ] 001: Learn slices
+	[ ] 002: Learn standard libraries
+```
+
+You can specify sub-TODOs with `<parent>-<sub>`, such as `1-1`.
+
+```
+$ todo delete 1-2
+$ todo list
+[ ] 001: Learn Golang
+	[ ] 001: Learn slices
+```
+
+```
+$ todo done 1-1
+$ todo list
+[ ] 001: Learn Golang
+	[x] 001: Learn slices
+```
+
+Also, you can handle sub-sub-TODOs by passing numbers separated by `-`.
+
+```
+$ todo add -p 1-2 Learn http package
+$ todo list
+[ ] 001: Learn Golang
+	[ ] 001: Learn slices
+	[ ] 002: Learn standard libraries
+		[ ] 001: Learn http package
+$ todo done 1-2-1
+$ todo list
+[ ] 001: Learn Golang
+	[ ] 001: Learn slices
+	[ ] 002: Learn standard libraries
+		[x] 001: Learn http package
+```
+
 ## Configuration
 
 ```
