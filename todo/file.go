@@ -34,16 +34,15 @@ func (f *File) Update(process TodoProcess) error {
 		return err
 	}
 
+	newTodos, err := process(todos)
+	if err != nil {
+		log.Println(err)
+	}
+
 	path := f.Path()
 	err = os.Remove(path)
 	if err != nil {
 		return err
-	}
-
-	newTodos, err := process(todos)
-	if err != nil {
-		log.Println(err)
-		return f.Write(todos)
 	}
 
 	return f.Write(newTodos)

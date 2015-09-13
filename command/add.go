@@ -17,6 +17,10 @@ var Add = cli.Command{
 		os.Exit(status)
 	},
 	Flags: []cli.Flag{
+		cli.StringFlag{
+			Name:  "parent, p",
+			Usage: "Add the sub-TODO under a specified TODO",
+		},
 		cli.BoolFlag{
 			Name:  "once, o",
 			Usage: "Add the TODO only if it exists",
@@ -30,8 +34,15 @@ func ExecAdd(context *cli.Context) int {
 		return 1
 	}
 
+	parentID := context.String("parent")
+	if !todo.ValidateID(parentID) {
+		log.Printf("invalid parent id: %q", parentID)
+		return 1
+	}
+
+	order := getNextOrder(parentID)
 	title := strings.Join(context.Args(), " ")
-	add := newTodoAddProcess(title, context.Bool("once"))
+	add := newTodoAddProcess(order, parentID, title, context.Bool("once"))
 
 	file := todo.OpenFile()
 	err := file.Update(add)
@@ -43,13 +54,13 @@ func ExecAdd(context *cli.Context) int {
 	return 0
 }
 
-func newTodoAddProcess(title string, isOnce bool) todo.TodoProcess {
+func newTodoAddProcess(order int, parentID, title string, isOnce bool) todo.TodoProcess {
 	return func(todos []todo.Todo) ([]todo.Todo, error) {
 		if isOnce && hasTodo(todos, title) {
 			return todos, nil
 		}
 
-		todo := todo.Todo{Title: title, Done: false}
+		todo := todo.NewTodo(order, parentID, title)
 		return append(todos, todo), nil
 	}
 }
@@ -61,4 +72,13 @@ func hasTodo(todos []todo.Todo, title string) bool {
 		}
 	}
 	return false
+}
+
+func getNextOrder(parentID string) int {
+	file := todo.OpenFile()
+	todos, _ := file.Read()
+	siblings := todo.FilterTodo(todos, func(todo todo.Todo) bool {
+		return todo.ParentID == parentID
+	})
+	return len(siblings) + 1
 }

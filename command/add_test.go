@@ -6,31 +6,59 @@ import (
 	"github.com/naoty/todo/todo"
 )
 
-func TestAdd(t *testing.T) {
-	todo1 := todo.Todo{Title: "dummy1", Done: false}
-	todo2 := todo.Todo{Title: "dummy2", Done: false}
-	todos := []todo.Todo{todo1}
+func TestAddTodo(t *testing.T) {
+	todo1 := todo.Todo{ID: "1", ParentID: "", Title: "dummy1", Done: false}
+	add := newTodoAddProcess(2, "", "dummy2", false)
 
-	add := newTodoAddProcess("dummy2", false)
+	result, _ := add([]todo.Todo{todo1})
 
-	actual, _ := add(todos)
-	expected := []todo.Todo{todo1, todo2}
+	if len(result) != 2 {
+		t.Errorf("len(result) expected: 2, actual: %d", len(result))
+	}
 
-	if len(actual) != len(expected) {
-		t.Errorf("add(%q) = %q, want %q", todo1, actual, expected)
+	if result[0].ID != "1" {
+		t.Errorf("result[0].ID expected: %q, actual: %q", "1", result[0].ID)
+	}
+
+	if result[1].ID != "2" {
+		t.Errorf("result[1].ID expected: %q, actual: %q", "2", result[1].ID)
 	}
 }
 
-func TestAddOnce(t *testing.T) {
-	todo1 := todo.Todo{Title: "dummy", Done: false}
-	todos := []todo.Todo{todo1}
+func TestAddTodoOnce(t *testing.T) {
+	todo1 := todo.Todo{ID: "1", ParentID: "", Title: "dummy1", Done: false}
+	add := newTodoAddProcess(2, "", "dummy1", true)
 
-	add := newTodoAddProcess("dummy", true)
+	result, _ := add([]todo.Todo{todo1})
 
-	actual, _ := add(todos)
-	expected := []todo.Todo{todo1}
+	if len(result) != 1 {
+		t.Errorf("len(result) expected: 1, actual: %d", len(result))
+	}
 
-	if len(actual) != len(expected) {
-		t.Errorf("add(%q) = %q, want %q", todo1, actual, expected)
+	if result[0].ID != "1" {
+		t.Errorf("result[0].ID expected: %q, actual: %q", "1", result[0].ID)
+	}
+}
+
+func TestAddSubTodoOnce(t *testing.T) {
+	todo1 := todo.Todo{ID: "1", ParentID: "", Title: "dummy1", Done: false}
+	add := newTodoAddProcess(1, "1", "dummy2", false)
+
+	result, _ := add([]todo.Todo{todo1})
+
+	if len(result) != 2 {
+		t.Errorf("len(result) expected: 2, actual: %d", len(result))
+	}
+
+	if result[0].ID != "1" {
+		t.Errorf("result[0].ID expected: %q, actual: %q", "1", result[0].ID)
+	}
+
+	if result[1].ID != "1-1" {
+		t.Errorf("result[1].ID expected: %q, actual: %q", "1-1", result[1].ID)
+	}
+
+	if result[1].ParentID != "1" {
+		t.Errorf("result[1].ID expected: %q, actual: %q", "1", result[1].ParentID)
 	}
 }

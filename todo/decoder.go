@@ -23,11 +23,15 @@ func (d *Decoder) Decode() ([]Todo, error) {
 
 	todos := []Todo{}
 	for _, record := range records {
-		var title string
+		var id, parentID, title string
 		var done bool
 
 		for k, v := range record {
 			switch k {
+			case "id":
+				id = v
+			case "parent_id":
+				parentID = v
 			case "title":
 				title = v
 			case "done":
@@ -35,7 +39,12 @@ func (d *Decoder) Decode() ([]Todo, error) {
 			}
 		}
 
-		todo := Todo{Title: title, Done: done}
+		todo := Todo{
+			ID:       id,
+			ParentID: parentID,
+			Title:    title,
+			Done:     done,
+		}
 		todos = append(todos, todo)
 	}
 

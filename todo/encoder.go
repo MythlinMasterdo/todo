@@ -29,6 +29,8 @@ func (e *Encoder) Encode(todos []Todo) error {
 func (e *Encoder) encodeTodo(todo Todo) map[string]string {
 	m := make(map[string]string)
 
+	m["id"] = todo.ID
+	m["parent_id"] = todo.ParentID
 	m["title"] = todo.Title
 
 	if todo.Done {
