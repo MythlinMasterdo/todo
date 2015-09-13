@@ -22,7 +22,7 @@ func (d *Decoder) Decode() ([]Todo, error) {
 	}
 
 	todos := []Todo{}
-	for i, record := range records {
+	for _, record := range records {
 		var title string
 		var done bool
 
@@ -35,7 +35,7 @@ func (d *Decoder) Decode() ([]Todo, error) {
 			}
 		}
 
-		todo := Todo{Number: i + 1, Title: title, Done: done}
+		todo := Todo{Title: title, Done: done}
 		todos = append(todos, todo)
 	}
 
