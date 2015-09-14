@@ -70,6 +70,18 @@ func (f *File) Read() ([]Todo, error) {
 	return todos, err
 }
 
+func (f *File) ReadSubTodos(id string) ([]Todo, error) {
+	todos, err := f.Read()
+	if err != nil {
+		return nil, err
+	}
+
+	todos = FilterTodo(todos, func(todo Todo) bool {
+		return todo.ParentID == id
+	})
+	return todos, nil
+}
+
 func (f *File) Write(todos []Todo) error {
 	path := f.Path()
 

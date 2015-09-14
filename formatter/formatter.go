@@ -5,5 +5,5 @@ import (
 )
 
 type Formatter interface {
-	Print(todos []todo.Todo) error
+	Print(todos []todo.Todo, indent string) error
 }

@@ -44,13 +44,13 @@ func ExecList(context *cli.Context) int {
 		f = formatter.NewNumberedFormatter(os.Stdout, mode)
 	}
 
-	todos, err := file.Read()
+	rootTodos, err := file.ReadSubTodos("")
 	if err != nil {
 		log.Println(err)
 		return 1
 	}
 
-	err = f.Print(todos)
+	err = f.Print(rootTodos, "")
 	if err != nil {
 		log.Println(err)
 		return 1

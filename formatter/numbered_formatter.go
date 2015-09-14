@@ -16,7 +16,9 @@ func NewNumberedFormatter(w io.Writer, m Mode) *NumberedFormatter {
 	return &NumberedFormatter{writer: w, Mode: m}
 }
 
-func (f *NumberedFormatter) Print(todos []todo.Todo) error {
+func (f *NumberedFormatter) Print(todos []todo.Todo, indent string) error {
+	file := todo.OpenFile()
+
 	for i, todo := range todos {
 		if f.Mode == DONE && !todo.Done {
 			continue
@@ -25,7 +27,15 @@ func (f *NumberedFormatter) Print(todos []todo.Todo) error {
 			continue
 		}
 		mark := NewMark(todo)
-		fmt.Fprintf(f.writer, "%s %03d: %s\n", mark, i+1, todo.Title)
+		fmt.Fprintf(f.writer, "%s%s %03d: %s\n", indent, mark, i+1, todo.Title)
+
+		subTodos, err := file.ReadSubTodos(todo.ID)
+
+		if err != nil {
+			continue
+		}
+
+		f.Print(subTodos, indent+"  ")
 	}
 
 	return nil

@@ -16,7 +16,9 @@ func NewMarkdownFormatter(w io.Writer, m Mode) *MarkdownFormatter {
 	return &MarkdownFormatter{writer: w, Mode: m}
 }
 
-func (f *MarkdownFormatter) Print(todos []todo.Todo) error {
+func (f *MarkdownFormatter) Print(todos []todo.Todo, indent string) error {
+	file := todo.OpenFile()
+
 	for _, todo := range todos {
 		if f.Mode == DONE && !todo.Done {
 			continue
@@ -25,7 +27,14 @@ func (f *MarkdownFormatter) Print(todos []todo.Todo) error {
 			continue
 		}
 		mark := NewMark(todo)
-		fmt.Fprintf(f.writer, "- %s %s\n", mark, todo.Title)
+		fmt.Fprintf(f.writer, "%s- %s %s\n", indent, mark, todo.Title)
+
+		subTodos, err := file.ReadSubTodos(todo.ID)
+		if err != nil {
+			continue
+		}
+
+		f.Print(subTodos, indent+"  ")
 	}
 
 	return nil
