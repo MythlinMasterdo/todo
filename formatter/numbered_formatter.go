@@ -30,7 +30,6 @@ func (f *NumberedFormatter) Print(todos []todo.Todo, indent string) error {
 		fmt.Fprintf(f.writer, "%s%s %03d: %s\n", indent, mark, i+1, todo.Title)
 
 		subTodos, err := file.ReadSubTodos(todo.ID)
-
 		if err != nil {
 			continue
 		}

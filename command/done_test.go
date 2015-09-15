@@ -6,26 +6,46 @@ import (
 	"github.com/naoty/todo/todo"
 )
 
-func TestDone(t *testing.T) {
+func TestDoneTodos(t *testing.T) {
 	todos := []todo.Todo{
-		todo.Todo{Title: "dummy1", Done: false},
-		todo.Todo{Title: "dummy2", Done: false},
-		todo.Todo{Title: "dummy3", Done: false},
+		todo.NewTodo(1, "", "dummy1"),
+		todo.NewTodo(2, "", "dummy2"),
+		todo.NewTodo(3, "", "dummy3"),
+	}
+	done := newTodoDoneProcess("2", "3")
+	result, _ := done(todos)
+
+	if result[0].Done != false {
+		t.Errorf("result[0].Done expected: false, actual: true")
 	}
 
-	done := newTodoDoneProcess(2, 3)
-
-	actual, _ := done(todos)
-	expected := []todo.Todo{
-		todo.Todo{Title: "dummy1", Done: false},
-		todo.Todo{Title: "dummy2", Done: true},
-		todo.Todo{Title: "dummy3", Done: true},
+	if result[1].Done != true {
+		t.Errorf("result[1].Done expected: true, actual: false")
 	}
 
-	if expected[0].Done != false {
-		t.Errorf("done(%q) = %q, want %q", todos, actual, expected)
+	if result[2].Done != true {
+		t.Errorf("result[2].Done expected: true, actual: false")
 	}
-	if expected[1].Done != true || expected[2].Done != true {
-		t.Errorf("done(%q) = %q, want %q", todos, actual, expected)
+}
+
+func TestDoneSubTodos(t *testing.T) {
+	todos := []todo.Todo{
+		todo.NewTodo(1, "", "dummy1"),
+		todo.NewTodo(1, "1", "dummy1-1"),
+		todo.NewTodo(1, "1-1", "dummy1-1-1"),
+	}
+	done := newTodoDoneProcess("1-1", "1-1-1")
+	result, _ := done(todos)
+
+	if result[0].Done != false {
+		t.Errorf("result[0].Done expected: false, actual: true")
+	}
+
+	if result[1].Done != true {
+		t.Errorf("result[1].Done expected: true, actual: false")
+	}
+
+	if result[2].Done != true {
+		t.Errorf("result[2].Done expected: true, actual: false")
 	}
 }

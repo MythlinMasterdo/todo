@@ -1,7 +1,6 @@
 package command
 
 import (
-	"errors"
 	"log"
 	"os"
 
@@ -25,16 +24,10 @@ func ExecDone(context *cli.Context) int {
 		return 1
 	}
 
-	nums, err := todoutil.Atois(context.Args())
-	if err != nil {
-		log.Println(err)
-		return 1
-	}
-
-	done := newTodoDoneProcess(nums...)
+	done := newTodoDoneProcess(context.Args()...)
 
 	file := todo.OpenFile()
-	err = file.Update(done)
+	err := file.Update(done)
 	if err != nil {
 		log.Println(err)
 		return 1
@@ -43,26 +36,13 @@ func ExecDone(context *cli.Context) int {
 	return 0
 }
 
-func newTodoDoneProcess(nums ...int) todo.TodoProcess {
+func newTodoDoneProcess(ids ...string) todo.TodoProcess {
 	return func(todos []todo.Todo) ([]todo.Todo, error) {
-		indices := make([]int, 0)
-
-		var err error
-		for _, num := range nums {
-			index := num - 1
-			if index >= len(todos) {
-				err = errors.New("Index out of bounds.")
-			}
-			indices = append(indices, index)
-		}
-		if err != nil {
-			return nil, err
-		}
-
 		newTodos := make([]todo.Todo, len(todos))
+
 		for i, todo := range todos {
 			newTodo := todo
-			if todoutil.ContainsInt(indices, i) {
+			if todoutil.ContainsString(ids, todo.ID) {
 				newTodo.Done = true
 			}
 			newTodos[i] = newTodo

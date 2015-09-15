@@ -24,3 +24,12 @@ func ContainsInt(xs []int, n int) bool {
 	}
 	return false
 }
+
+func ContainsString(strs []string, str string) bool {
+	for _, x := range strs {
+		if x == str {
+			return true
+		}
+	}
+	return false
+}
