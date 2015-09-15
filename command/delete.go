@@ -1,7 +1,6 @@
 package command
 
 import (
-	"errors"
 	"log"
 	"os"
 
@@ -25,16 +24,10 @@ func ExecDelete(context *cli.Context) int {
 		return 1
 	}
 
-	nums, err := todoutil.Atois(context.Args())
-	if err != nil {
-		log.Println(err)
-		return 1
-	}
-
-	delete := newTodoDeleteProcess(nums...)
+	delete := newTodoDeleteProcess(context.Args()...)
 
 	file := todo.OpenFile()
-	err = file.Update(delete)
+	err := file.Update(delete)
 	if err != nil {
 		log.Println(err)
 		return 1
@@ -43,27 +36,15 @@ func ExecDelete(context *cli.Context) int {
 	return 0
 }
 
-func newTodoDeleteProcess(nums ...int) todo.TodoProcess {
+func newTodoDeleteProcess(ids ...string) todo.TodoProcess {
 	return func(todos []todo.Todo) ([]todo.Todo, error) {
-		indices := make([]int, 0)
-
-		var err error
-		for _, num := range nums {
-			index := num - 1
-			if index >= len(todos) {
-				err = errors.New("Index out of bounds.")
-			}
-			indices = append(indices, index)
-		}
-		if err != nil {
-			return nil, err
-		}
-
 		newTodos := make([]todo.Todo, 0)
-		for i, todo := range todos {
-			if !todoutil.ContainsInt(indices, i) {
-				newTodos = append(newTodos, todo)
+
+		for _, todo := range todos {
+			if todoutil.ContainsString(ids, todo.ID) {
+				continue
 			}
+			newTodos = append(newTodos, todo)
 		}
 
 		return newTodos, nil

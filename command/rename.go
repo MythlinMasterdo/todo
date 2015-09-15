@@ -1,10 +1,8 @@
 package command
 
 import (
-	"errors"
 	"log"
 	"os"
-	"strconv"
 	"strings"
 
 	"github.com/codegangsta/cli"
@@ -26,17 +24,11 @@ func ExecRename(context *cli.Context) int {
 		return 1
 	}
 
-	num, err := strconv.Atoi(context.Args()[0])
-	if err != nil {
-		log.Println(err)
-		return 1
-	}
-
 	title := strings.Join(context.Args()[1:], " ")
-	rename := newTodoRenameProcess(num, title)
+	rename := newTodoRenameProcess(context.Args()[0], title)
 
 	file := todo.OpenFile()
-	err = file.Update(rename)
+	err := file.Update(rename)
 	if err != nil {
 		log.Println(err)
 		return 1
@@ -45,19 +37,17 @@ func ExecRename(context *cli.Context) int {
 	return 0
 }
 
-func newTodoRenameProcess(num int, title string) todo.TodoProcess {
+func newTodoRenameProcess(id, title string) todo.TodoProcess {
 	return func(todos []todo.Todo) ([]todo.Todo, error) {
-		i := num - 1
-		if i >= len(todos) {
-			return nil, errors.New("Index out of bounds.")
-		}
-
-		newTodo := todos[i]
-		newTodo.Title = title
-
 		newTodos := make([]todo.Todo, len(todos))
-		copy(newTodos, todos)
-		newTodos[i] = newTodo
+
+		for i, todo := range todos {
+			newTodo := todo
+			if todo.ID == id {
+				newTodo.Title = title
+			}
+			newTodos[i] = newTodo
+		}
 
 		return newTodos, nil
 	}

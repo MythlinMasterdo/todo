@@ -6,21 +6,30 @@ import (
 	"github.com/naoty/todo/todo"
 )
 
-func TestDelete(t *testing.T) {
+func TestDeleteTodos(t *testing.T) {
 	todos := []todo.Todo{
-		todo.Todo{Title: "dummy1", Done: false},
-		todo.Todo{Title: "dummy2", Done: false},
-		todo.Todo{Title: "dummy3", Done: false},
+		todo.NewTodo(1, "", "dummy1"),
+		todo.NewTodo(2, "", "dummy2"),
+		todo.NewTodo(3, "", "dummy3"),
 	}
+	delete := newTodoDeleteProcess("2", "3")
+	result, _ := delete(todos)
 
-	delete := newTodoDeleteProcess(2, 3)
-
-	actual, _ := delete(todos)
-	expected := []todo.Todo{
-		todo.Todo{Title: "dummy1", Done: false},
+	if len(result) != 1 {
+		t.Errorf("len(result) expected: 1, actual: %d", len(result))
 	}
+}
 
-	if len(actual) != len(expected) {
-		t.Errorf("delete(%q) = %q, want %q", todos, actual, expected)
+func TestDeleteSubTodos(t *testing.T) {
+	todos := []todo.Todo{
+		todo.NewTodo(1, "", "dummy1"),
+		todo.NewTodo(1, "1", "dummy1-1"),
+		todo.NewTodo(1, "1-1", "dummy1-1-1"),
+	}
+	delete := newTodoDeleteProcess("1-1", "1-1-1")
+	result, _ := delete(todos)
+
+	if len(result) != 1 {
+		t.Errorf("len(result) expected: 1, actual: %d", len(result))
 	}
 }
