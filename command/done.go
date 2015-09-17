@@ -39,7 +39,6 @@ func ExecDone(context *cli.Context) int {
 func newTodoDoneProcess(ids ...string) todo.TodoProcess {
 	return func(todos []todo.Todo) ([]todo.Todo, error) {
 		newTodos := make([]todo.Todo, len(todos))
-
 		for i, todo := range todos {
 			newTodo := todo
 			if todoutil.ContainsString(ids, todo.ID) {
@@ -47,7 +46,6 @@ func newTodoDoneProcess(ids ...string) todo.TodoProcess {
 			}
 			newTodos[i] = newTodo
 		}
-
 		return newTodos, nil
 	}
 }

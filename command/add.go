@@ -77,7 +77,7 @@ func hasTodo(todos []todo.Todo, title string) bool {
 func getNextOrder(parentID string) int {
 	file := todo.OpenFile()
 	todos, _ := file.Read()
-	siblings := todo.FilterTodo(todos, func(todo todo.Todo) bool {
+	siblings := todo.FilterTodos(todos, func(todo todo.Todo) bool {
 		return todo.ParentID == parentID
 	})
 	return len(siblings) + 1

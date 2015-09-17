@@ -39,14 +39,13 @@ func ExecDelete(context *cli.Context) int {
 func newTodoDeleteProcess(ids ...string) todo.TodoProcess {
 	return func(todos []todo.Todo) ([]todo.Todo, error) {
 		newTodos := make([]todo.Todo, 0)
-
 		for _, todo := range todos {
 			if todoutil.ContainsString(ids, todo.ID) {
 				continue
 			}
 			newTodos = append(newTodos, todo)
 		}
-
+		newTodos = todo.ReorderTodos(newTodos, "")
 		return newTodos, nil
 	}
 }

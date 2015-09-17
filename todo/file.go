@@ -76,7 +76,7 @@ func (f *File) ReadSubTodos(id string) ([]Todo, error) {
 		return nil, err
 	}
 
-	todos = FilterTodo(todos, func(todo Todo) bool {
+	todos = FilterTodos(todos, func(todo Todo) bool {
 		return todo.ParentID == id
 	})
 	return todos, nil
