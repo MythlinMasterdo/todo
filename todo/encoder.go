@@ -1,6 +1,7 @@
 package todo
 
 import (
+	"fmt"
 	"io"
 
 	"github.com/ymotongpoo/goltsv"
@@ -31,6 +32,7 @@ func (e *Encoder) encodeTodo(todo Todo) map[string]string {
 
 	m["id"] = todo.ID
 	m["parent_id"] = todo.ParentID
+	m["order"] = fmt.Sprintf("%d", todo.Order)
 	m["title"] = todo.Title
 
 	if todo.Done {

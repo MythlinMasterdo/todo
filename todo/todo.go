@@ -3,6 +3,8 @@ package todo
 import (
 	"fmt"
 	"regexp"
+	"strconv"
+	"strings"
 )
 
 type Todo struct {
@@ -13,6 +15,7 @@ type Todo struct {
 	// is "".
 	ParentID string
 
+	Order int
 	Title string
 	Done  bool
 }
@@ -23,9 +26,20 @@ func NewTodo(order int, parentID, title string) Todo {
 	return Todo{
 		ID:       id,
 		ParentID: parentID,
+		Order:    order,
 		Title:    title,
 		Done:     false,
 	}
+}
+
+func (todo Todo) GetOrders() []int {
+	orderStrings := strings.Split(todo.ID, "-")
+	orders := make([]int, len(orderStrings))
+	for i, orderString := range orderStrings {
+		order, _ := strconv.Atoi(orderString)
+		orders[i] = order
+	}
+	return orders
 }
 
 var pattern = regexp.MustCompile(`^([0-9]+-)*([0-9]+)?$`)

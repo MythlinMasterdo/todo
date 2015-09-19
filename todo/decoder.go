@@ -2,6 +2,7 @@ package todo
 
 import (
 	"io"
+	"strconv"
 
 	"github.com/ymotongpoo/goltsv"
 )
@@ -24,6 +25,7 @@ func (d *Decoder) Decode() ([]Todo, error) {
 	todos := []Todo{}
 	for _, record := range records {
 		var id, parentID, title string
+		var order int
 		var done bool
 
 		for k, v := range record {
@@ -32,6 +34,12 @@ func (d *Decoder) Decode() ([]Todo, error) {
 				id = v
 			case "parent_id":
 				parentID = v
+			case "order":
+				v, err := strconv.Atoi(v)
+				if err != nil {
+					continue
+				}
+				order = v
 			case "title":
 				title = v
 			case "done":
@@ -42,6 +50,7 @@ func (d *Decoder) Decode() ([]Todo, error) {
 		todo := Todo{
 			ID:       id,
 			ParentID: parentID,
+			Order:    order,
 			Title:    title,
 			Done:     done,
 		}

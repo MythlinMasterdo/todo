@@ -6,21 +6,40 @@ import (
 	"github.com/naoty/todo/todo"
 )
 
-func TestMove(t *testing.T) {
+func TestRightMoveTodo(t *testing.T) {
 	todos := []todo.Todo{
-		todo.Todo{Title: "dummy1", Done: true},
-		todo.Todo{Title: "dummy2", Done: true},
+		todo.NewTodo(1, "", "dummy1"),
+		todo.NewTodo(2, "", "dummy2"),
+		todo.NewTodo(3, "", "dummy3"),
+		todo.NewTodo(4, "", "dummy4"),
 	}
 
-	move := newTodoMoveProcess(2, 1)
+	move := newTodoMoveProcess("1", "3")
+	result, _ := move(todos)
 
-	actual, _ := move(todos)
-	expected := []todo.Todo{
-		todo.Todo{Title: "dummy2", Done: true},
-		todo.Todo{Title: "dummy1", Done: true},
+	expectations := []string{"dummy2", "dummy3", "dummy1", "dummy4"}
+	for i, expectation := range expectations {
+		if result[i].Title != expectation {
+			t.Errorf("result[%d].Title expected: %q, actual: %q", i, expectation, result[i].Title)
+		}
+	}
+}
+
+func TestLeftMoveTodo(t *testing.T) {
+	todos := []todo.Todo{
+		todo.NewTodo(1, "", "dummy1"),
+		todo.NewTodo(2, "", "dummy2"),
+		todo.NewTodo(3, "", "dummy3"),
+		todo.NewTodo(4, "", "dummy4"),
 	}
 
-	if expected[0].Title != "dummy2" || expected[1].Title != "dummy1" {
-		t.Errorf("move(%q) = %q, want %q", todos, actual, expected)
+	move := newTodoMoveProcess("3", "1")
+	result, _ := move(todos)
+
+	expectations := []string{"dummy3", "dummy1", "dummy2", "dummy4"}
+	for i, expectation := range expectations {
+		if result[i].Title != expectation {
+			t.Errorf("result[%d].Title expected: %q, actual: %q", i, expectation, result[i].Title)
+		}
 	}
 }
