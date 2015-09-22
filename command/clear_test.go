@@ -7,7 +7,7 @@ import (
 )
 
 func TestClearTodos(t *testing.T) {
-	todos := []todo.Todo{
+	todos := todo.Todos{
 		todo.Todo{ID: "1", ParentID: "", Title: "dummy1", Done: false},
 		todo.Todo{ID: "2", ParentID: "", Title: "dummy2", Done: true},
 		todo.Todo{ID: "3", ParentID: "", Title: "dummy3", Done: true},
@@ -24,8 +24,8 @@ func TestClearTodos(t *testing.T) {
 	}
 }
 
-func TestClearAndReorderTodos(t *testing.T) {
-	todos := []todo.Todo{
+func TestClearAndCompactTodos(t *testing.T) {
+	todos := todo.Todos{
 		todo.Todo{ID: "1", ParentID: "", Title: "dummy1", Done: true},
 		todo.Todo{ID: "2", ParentID: "", Title: "dummy2", Done: false},
 	}

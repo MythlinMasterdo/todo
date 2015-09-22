@@ -25,18 +25,26 @@ func (todos Todos) Filter(f func(Todo) bool) Todos {
 	return newTodos
 }
 
-func (todos Todos) Reorder(parentID string) Todos {
-	rootTodos := todos.Filter(func(todo Todo) bool {
-		return todo.ParentID == parentID
-	})
+func (todos Todos) GroupBy(f func(Todo) string) map[string]Todos {
+	groups := make(map[string]Todos)
+	for _, todo := range todos {
+		key := f(todo)
+		groups[key] = append(groups[key], todo)
+	}
+	return groups
+}
 
+func (todos Todos) Compact() Todos {
 	newTodos := make(Todos, 0)
-	for i, todo := range rootTodos {
-		newTodo := NewTodo(i+1, todo.ParentID, todo.Title)
-		newTodos = append(newTodos, newTodo)
-
-		subTodos := todos.Reorder(todo.ID)
-		newTodos = append(newTodos, subTodos...)
+	group := todos.GroupBy(func(todo Todo) string {
+		return todo.ParentID
+	})
+	for _, _todos := range group {
+		for i, todo := range _todos {
+			newTodo := NewTodo(i+1, todo.ParentID, todo.Title)
+			newTodo.Done = todo.Done
+			newTodos = append(newTodos, newTodo)
+		}
 	}
 	return newTodos
 }

@@ -32,7 +32,7 @@ func newTodoClearProcess() todo.TodoProcess {
 				newTodos = append(newTodos, todo)
 			}
 		}
-		newTodos = newTodos.Reorder("")
+		newTodos = newTodos.Compact()
 		return newTodos, nil
 	}
 }

@@ -7,7 +7,7 @@ import (
 )
 
 func TestDeleteTodos(t *testing.T) {
-	todos := []todo.Todo{
+	todos := todo.Todos{
 		todo.NewTodo(1, "", "dummy1"),
 		todo.NewTodo(2, "", "dummy2"),
 		todo.NewTodo(3, "", "dummy3"),
@@ -21,7 +21,7 @@ func TestDeleteTodos(t *testing.T) {
 }
 
 func TestDeleteSubTodos(t *testing.T) {
-	todos := []todo.Todo{
+	todos := todo.Todos{
 		todo.NewTodo(1, "", "dummy1"),
 		todo.NewTodo(1, "1", "dummy1-1"),
 		todo.NewTodo(1, "1-1", "dummy1-1-1"),
@@ -34,8 +34,8 @@ func TestDeleteSubTodos(t *testing.T) {
 	}
 }
 
-func TestDeleteAndReorderTodos(t *testing.T) {
-	todos := []todo.Todo{
+func TestDeleteAndCompactTodos(t *testing.T) {
+	todos := todo.Todos{
 		todo.NewTodo(1, "", "dummy1"),
 		todo.NewTodo(2, "", "dummy2"),
 	}
