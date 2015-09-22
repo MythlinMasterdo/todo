@@ -25,14 +25,14 @@ func ExecClear(context *cli.Context) int {
 }
 
 func newTodoClearProcess() todo.TodoProcess {
-	return func(todos []todo.Todo) ([]todo.Todo, error) {
-		newTodos := make([]todo.Todo, 0)
+	return func(todos todo.Todos) (todo.Todos, error) {
+		newTodos := make(todo.Todos, 0)
 		for _, todo := range todos {
 			if !todo.Done {
 				newTodos = append(newTodos, todo)
 			}
 		}
-		newTodos = todo.ReorderTodos(newTodos, "")
+		newTodos = newTodos.Reorder("")
 		return newTodos, nil
 	}
 }

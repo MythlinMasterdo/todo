@@ -44,7 +44,7 @@ func ExecMove(context *cli.Context) int {
 }
 
 func newTodoMoveProcess(from, to int) todo.TodoProcess {
-	return func(todos []todo.Todo) ([]todo.Todo, error) {
+	return func(todos todo.Todos) (todo.Todos, error) {
 		fromIndex, toIndex := from-1, to-1
 		if fromIndex >= len(todos) || toIndex >= len(todos) {
 			return nil, errors.New("Index out of bounds.")
@@ -52,7 +52,7 @@ func newTodoMoveProcess(from, to int) todo.TodoProcess {
 
 		movedTodo := todos[fromIndex]
 		todos = append(todos[:fromIndex], todos[fromIndex+1:]...)
-		todos = append(todos[:toIndex], append([]todo.Todo{movedTodo}, todos[toIndex:]...)...)
+		todos = append(todos[:toIndex], append(todo.Todos{movedTodo}, todos[toIndex:]...)...)
 		return todos, nil
 	}
 }

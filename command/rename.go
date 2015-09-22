@@ -38,8 +38,8 @@ func ExecRename(context *cli.Context) int {
 }
 
 func newTodoRenameProcess(id, title string) todo.TodoProcess {
-	return func(todos []todo.Todo) ([]todo.Todo, error) {
-		newTodos := make([]todo.Todo, len(todos))
+	return func(todos todo.Todos) (todo.Todos, error) {
+		newTodos := make(todo.Todos, len(todos))
 
 		for i, todo := range todos {
 			newTodo := todo

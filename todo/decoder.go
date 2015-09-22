@@ -14,14 +14,14 @@ func NewDecoder(r io.Reader) *Decoder {
 	return &Decoder{reader: r}
 }
 
-func (d *Decoder) Decode() ([]Todo, error) {
+func (d *Decoder) Decode() (Todos, error) {
 	reader := goltsv.NewReader(d.reader)
 	records, err := reader.ReadAll()
 	if err != nil {
 		return nil, err
 	}
 
-	todos := []Todo{}
+	todos := Todos{}
 	for _, record := range records {
 		var id, parentID, title string
 		var done bool
