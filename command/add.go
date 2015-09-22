@@ -55,7 +55,7 @@ func ExecAdd(context *cli.Context) int {
 }
 
 func newTodoAddProcess(order int, parentID, title string, isOnce bool) todo.TodoProcess {
-	return func(todos []todo.Todo) ([]todo.Todo, error) {
+	return func(todos todo.Todos) (todo.Todos, error) {
 		if isOnce && hasTodo(todos, title) {
 			return todos, nil
 		}
@@ -65,7 +65,7 @@ func newTodoAddProcess(order int, parentID, title string, isOnce bool) todo.Todo
 	}
 }
 
-func hasTodo(todos []todo.Todo, title string) bool {
+func hasTodo(todos todo.Todos, title string) bool {
 	for _, todo := range todos {
 		if todo.Title == title {
 			return true
@@ -77,7 +77,7 @@ func hasTodo(todos []todo.Todo, title string) bool {
 func getNextOrder(parentID string) int {
 	file := todo.OpenFile()
 	todos, _ := file.Read()
-	siblings := todo.FilterTodos(todos, func(todo todo.Todo) bool {
+	siblings := todos.Filter(func(todo todo.Todo) bool {
 		return todo.ParentID == parentID
 	})
 	return len(siblings) + 1

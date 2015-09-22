@@ -10,7 +10,7 @@ type File struct {
 	path string
 }
 
-type TodoProcess func([]Todo) ([]Todo, error)
+type TodoProcess func(Todos) (Todos, error)
 
 func OpenFile() *File {
 	return &File{}
@@ -48,7 +48,7 @@ func (f *File) Update(process TodoProcess) error {
 	return f.Write(newTodos)
 }
 
-func (f *File) Read() ([]Todo, error) {
+func (f *File) Read() (Todos, error) {
 	path := f.Path()
 
 	if !f.isExist() {
@@ -70,19 +70,19 @@ func (f *File) Read() ([]Todo, error) {
 	return todos, err
 }
 
-func (f *File) ReadSubTodos(id string) ([]Todo, error) {
+func (f *File) ReadSubTodos(id string) (Todos, error) {
 	todos, err := f.Read()
 	if err != nil {
 		return nil, err
 	}
 
-	todos = FilterTodos(todos, func(todo Todo) bool {
+	todos = todos.Filter(func(todo Todo) bool {
 		return todo.ParentID == id
 	})
 	return todos, nil
 }
 
-func (f *File) Write(todos []Todo) error {
+func (f *File) Write(todos Todos) error {
 	path := f.Path()
 
 	if !f.isExist() {

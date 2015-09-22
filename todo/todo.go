@@ -56,29 +56,3 @@ func generateID(order int, parentID string) string {
 		return fmt.Sprintf("%s-%d", parentID, order)
 	}
 }
-
-func FilterTodos(todos []Todo, f func(Todo) bool) []Todo {
-	newTodos := make([]Todo, 0)
-	for _, todo := range todos {
-		if f(todo) {
-			newTodos = append(newTodos, todo)
-		}
-	}
-	return newTodos
-}
-
-func ReorderTodos(todos []Todo, parentID string) []Todo {
-	rootTodos := FilterTodos(todos, func(todo Todo) bool {
-		return todo.ParentID == parentID
-	})
-
-	newTodos := make([]Todo, 0)
-	for i, todo := range rootTodos {
-		newTodo := NewTodo(i+1, todo.ParentID, todo.Title)
-		newTodos = append(newTodos, newTodo)
-
-		subTodos := ReorderTodos(todos, todo.ID)
-		newTodos = append(newTodos, subTodos...)
-	}
-	return newTodos
-}

@@ -1,7 +1,6 @@
 package command
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"sort"
@@ -38,16 +37,16 @@ func ExecMove(context *cli.Context) int {
 }
 
 func newTodoMoveProcess(fromID, toID string) todo.TodoProcess {
-	return func(todos []todo.Todo) ([]todo.Todo, error) {
-		movedTodo, err := findTodo(todos, fromID)
-		targetTodo, err := findTodo(todos, toID)
+	return func(todos todo.Todos) (todo.Todos, error) {
+		movedTodo, err := todos.Find(fromID)
+		targetTodo, err := todos.Find(toID)
 		if err != nil {
 			return nil, err
 		}
 
 		isRightMove := (movedTodo.Order < targetTodo.Order)
 
-		newTodos := make([]todo.Todo, len(todos))
+		newTodos := make(todo.Todos, len(todos))
 		for i, t := range todos {
 			newTodo := t
 
@@ -75,13 +74,4 @@ func newTodoMoveProcess(fromID, toID string) todo.TodoProcess {
 
 		return newTodos, nil
 	}
-}
-
-func findTodo(todos []todo.Todo, id string) (todo.Todo, error) {
-	for _, todo := range todos {
-		if todo.ID == id {
-			return todo, nil
-		}
-	}
-	return todo.Todo{}, fmt.Errorf("TODO not found: %q", id)
 }

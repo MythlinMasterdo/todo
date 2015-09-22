@@ -15,7 +15,7 @@ func NewEncoder(w io.Writer) *Encoder {
 	return &Encoder{writer: w}
 }
 
-func (e *Encoder) Encode(todos []Todo) error {
+func (e *Encoder) Encode(todos Todos) error {
 	data := make([]map[string]string, len(todos))
 	for i, todo := range todos {
 		data[i] = e.encodeTodo(todo)
